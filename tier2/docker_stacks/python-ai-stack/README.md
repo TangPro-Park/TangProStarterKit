@@ -52,7 +52,15 @@ docker exec <CONTAINER_NAME> python scripts/my_script.py
    * 코드(`*.py`, `*.md`) 변경 시: 마운트로 즉시 반영되므로 `--build` 불필요.
    * `requirements.txt`, `Dockerfile` 변경 시: `--build` 필요.
 
-## 5. <플레이스홀더> 설정 안내
+## 5. 컨벤션 안내 (중요)
+
+이 프리셋은 다음 두 가지를 가정하고 작성되었습니다:
+- 앱의 메인 진입점이 `app/main.py`에 존재함 (Dockerfile의 `CMD` 참고)
+- `/health` 엔드포인트가 존재함 (docker-compose의 `healthcheck` 참고)
+
+만약 본인 프로젝트의 구조와 다르다면 `Dockerfile`의 CMD와 `docker-compose.yml`의 healthcheck를 반드시 수정하세요.
+
+## 6. <플레이스홀더> 설정 안내
 
 사용자 프로젝트마다 `docker-compose.yml` 에서 다음 항목을 직접 채워야 합니다:
 - `<SERVICE_NAME>`: 서비스명 (예: `ai-api`)
