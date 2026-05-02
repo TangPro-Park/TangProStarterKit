@@ -62,7 +62,7 @@
 | Phase 진행 단계 | Phase 4 (PoC 실현 단계) |
 
 ### 4.1 Oracle에서 실제 발생한 실패 → 룰화 사례
-1. **시골의사 병렬 큐 사고** (2026-04-XX) — 매억남 큐 돌리는 도중 임의로 시골의사 큐를 병렬 가동 → yt-dlp 트래픽 충돌·시스템 행. **룰화**: `feedback_batch_execution_approval.md` (5계명: 단일 큐, 사용자 승인, 명시 범위 외 작업 금지, 자동 재시작 금지) + `docs/runbook/execution_governance.md`.
+1. **대규모 데이터 병렬 큐 사고** (2026-04-XX) — Type-A 데이터 수집 큐를 돌리는 도중 임의로 Type-B 큐를 병렬 가동 → 외부 API 트래픽 충돌·시스템 행. **룰화**: `feedback_batch_execution_approval.md` (5계명: 단일 큐, 사용자 승인, 명시 범위 외 작업 금지, 자동 재시작 금지) + `docs/runbook/execution_governance.md`.
 2. **SPEC 번호 충돌** — `SPEC_013_essay_ingestion_pipeline.md` 와 `SPEC_013_project_elliott.md` 가 동일 번호로 공존. **룰화**: 한 번 부여된 SPEC 번호는 재사용 금지, 충돌 시 새 번호로 분기.
 3. **DuckDB 컬럼 RENAME 의존성** — INDEX 의존 때문에 ALTER 실패 → 백업 후 재생성. **룰화**: `docs/devlog/2026-05-01_chart_data_lakehouse_and_personas.md` 의 "마이그레이션 정리" 섹션, 그리고 SPEC_024 의 Risks 섹션에 사전 기록.
 4. **머신레벨 vs 색상레벨 봉 표현** — 사용자 피드백 "디스플레이와 색으로 구분하는건 아닌거같어 머신레벨로" → 표준화. **룰화**: `docs/conventions/candle_reading.md`.
@@ -107,7 +107,7 @@
 ## 원리 7. 실패 → 룰 즉시 변환 (Fail Fast, Codify Faster)
 - 한 번 일어난 사고는 한 번만 일어나도록 즉시 룰북·메모리·CLAUDE.md 에 박는다.
 - 룰의 본문은 사례·*Why*·*How to apply* 3종을 명시.
-- (Oracle 사례: 시골의사 병렬 큐 사고 → 24시간 안에 거버넌스 룰북 + auto-memory 엔트리 생성.)
+- (Oracle 사례: 대규모 데이터 병렬 큐 사고 → 24시간 안에 거버넌스 룰북 + auto-memory 엔트리 생성.)
 
 ---
 
@@ -240,11 +240,11 @@
 
 ## 5.6 큐·배치 운영 (반복 작업의 안전 룰)
 
-> Oracle 시골의사 병렬 큐 사고에서 추출한 5계명. **모든 장기 배치 작업에 적용.**
+> Oracle 병렬 큐 사고에서 추출한 5계명. **모든 장기 배치 작업에 적용.**
 
 1. **단일 큐 원칙**: 동시에 두 개 이상의 큐를 절대 돌리지 않는다.
 2. **명시 승인 원칙**: 큐 시작은 사용자 명시 승인 후에만.
-3. **명시 범위 한정**: 사용자가 지시한 범위 외 작업을 임의 추가 금지 (예: "매억남 짧은거만"이면 정확히 그것만).
+3. **명시 범위 한정**: 사용자가 지시한 범위 외 작업을 임의 추가 금지 (예: "조건 A에 맞는 데이터만"이면 정확히 그것만).
 4. **자동 재시작 금지**: fail 시 재시작 정책은 사용자가 정한다. AI가 임의로 재가동 X.
 5. **idempotent 우선**: 모든 단계는 산출물 존재 시 자동 스킵하도록 설계 (재가동 비용 0).
 
@@ -394,8 +394,8 @@ type: feedback | project | user | reference
 
 ## 9.2 Oracle 검증 사례
 
-### 사례 A. 시골의사 병렬 큐 사고
-- **사고**: 매억남 큐 도중 임의 시골의사 큐 병렬 가동 → 시스템 행
+### 사례 A. 대규모 데이터 병렬 큐 사고
+- **사고**: Type-A 큐 도중 임의로 Type-B 큐를 병렬 가동 → 외부 리소스 초과로 시스템 행
 - **변환물**:
   - `docs/runbook/execution_governance.md` (5계명 + 모듈-자원 매트릭스)
   - `memory/feedback_batch_execution_approval.md` (다음 세션 자동 로드)
