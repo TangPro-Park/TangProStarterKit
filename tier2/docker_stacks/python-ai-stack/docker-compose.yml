@@ -1,0 +1,58 @@
+services:
+  <SERVICE_NAME>:
+    build: .
+    container_name: <CONTAINER_NAME>
+    network_mode: "host"
+    env_file:
+      - .env
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PYTHONPATH=/app
+      # claude CLI는 ANTHROPIC_API_KEY 가 있으면 API 모드로 폴백되어 구독을 무시하고 크레딧 소모.
+      # .env 의 키는 보관하되 컨테이너 환경에서는 빈 값으로 override해 claude CLI 가 OAuth 인증을 사용하도록 강제.
+      - ANTHROPIC_API_KEY=
+      # KNOWLEDGE_DIR=/data/knowledge
+    volumes:
+      # 소스 코드 — rebuild 없이 코드 변경 즉시 반영
+      - .:/app
+      
+      # [선택] claude-code 프로바이더: 호스트 CLI 바이너리 + 인증 정보 마운트 (본인 환경 경로에 맞게 주석 해제)
+      # - /home/<사용자>/.local/share/claude/versions/2.1.119:/usr/local/bin/claude:ro
+      # - /mnt/c/Users/<계정명>/.claude:/root/.claude:ro
+      # - /mnt/c/Users/<계정명>/.claude.json:/root/.claude.json:ro
+      
+      # [선택] 호스트 Windows 의 지식베이스(Obsidian Vault 등) 컨테이너 연결
+      # - /mnt/c/Users/<계정명>/<옵시디언경로>:/data/knowledge
+      
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/health').raise_for_status()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # 그래프 DB 옵션: 안 쓰면 삭제 또는 주석 처리하세요.
+  neo4j:
+    image: neo4j:5.26.0
+    container_name: <DB_CONTAINER_NAME>
+    ports:
+      - "7474:7474"   # Neo4j Browser
+      - "7687:7687"   # Bolt
+    environment:
+      NEO4J_AUTH: ${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD:-oracle_dev_2026}
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: apoc.*
+      NEO4J_server_memory_heap_initial__size: 512m
+      NEO4J_server_memory_heap_max__size: 1G
+    volumes:
+      - ./data/neo4j/data:/data
+      - ./data/neo4j/logs:/logs
+      - ./data/neo4j/plugins:/plugins
+    healthcheck:
+      test: ["CMD", "neo4j", "status"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
