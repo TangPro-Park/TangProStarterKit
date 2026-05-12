@@ -1,8 +1,37 @@
 # SPEC_NNN: <기능명>
 
-> **Status**: Draft
+> **Status**: Draft   <!-- Draft / In Progress / Done / On Hold / Abandoned -->
 > **작성일**: YYYY-MM-DD
 > **연관**: (선행/관련 SPEC 링크)
+
+<!--
+Status 안내:
+- Draft       — 작성 중 (사용자 컨펌 전)
+- In Progress — 사용자 컨펌 후 구현 중
+- Done        — Test Plan + Success Criteria 통과
+- On Hold     — 현재 ROI 0 으로 보류. *재개 트리거* 필수 명시 (아래 §0 참조)
+- Abandoned   — 명시 폐기 (사유 기록)
+-->
+
+---
+
+## 0. Status: On Hold 처리 (해당 시만)
+
+> ROI 0 추상화 도입 검토 결과 `On Hold` 라면 본 섹션 채울 것. 폐기보다 보존 — 재발견·재평가 가능.
+
+**GO 사유 검증 4 질문 결과**:
+
+| # | 질문 | 답 |
+|---|---|---|
+| Q1 | 마켓플레이스·외부 공개 계획? | (시점 없으면 ❌) |
+| Q2 | 의존 SPEC 곧 진입? | (시기 미정이면 ❌) |
+| Q3 | 현재 도구·형식의 구체 pain point? | (가설이면 ❌) |
+| Q4 | 도입 직후 *즉시 효용* 0 이 아닌가? | (0 이면 ❌) |
+
+**재개 트리거** (검증 통과 시 Status 변경 조건):
+- (예: "marketplace 공개 결정 시" / "의존 SPEC_XXX 진입 시" / "사용자가 pain point 명시 시")
+
+자세한 절차: [`docs/conventions/architecture-preservation.md`](../conventions/architecture-preservation.md)
 
 ---
 

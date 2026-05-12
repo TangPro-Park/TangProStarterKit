@@ -76,7 +76,23 @@
 
 ---
 
-## 6. 큐·배치 운영 5계명 (반복 작업 안전 룰)
+## 6. 대전제·아키텍처 보호 (AI 작업 룰)
+
+**핵심 layer 골격·데이터 모델·PROJECT_DIRECTIVE 다이어그램·CLAUDE.md 계층 지도는 사용자 명시 결정의 영역.** AI 가 임의 변경 금지.
+
+| 상황 | 조치 |
+|---|---|
+| 신규 SPEC 이 기존 골격에 안 맞음 | **"어디에 넣을지" 사용자에게 묻기** — 골격 자체 변경 X |
+| 시각화·UI 욕구로 데이터 모델 변경 충동 | *시각화는 시각화로 해결* — 모델 그대로 |
+| ROI 0 추상화 도입 검토 | GO 사유 4 질문 검증 → 미통과 시 `Status: On Hold` (폐기 X) |
+
+위반 시 → `git checkout <pre-change-commit> -- <files>` 로 깔끔 원복 + 메모리 룰 박제.
+
+자세히: [`docs/conventions/architecture-preservation.md`](docs/conventions/architecture-preservation.md)
+
+---
+
+## 7. 큐·배치 운영 5계명 (반복 작업 안전 룰)
 
 > 한 번에 둘 이상의 큐를 절대 돌리지 않는다.
 
@@ -88,7 +104,7 @@
 
 ---
 
-## 7. 커밋 메시지
+## 8. 커밋 메시지
 
 ```
 [모듈/계층] 작업 유형: 간결한 설명
@@ -102,7 +118,7 @@
 
 ---
 
-## 8. 실행 환경 — <환경 명시>
+## 9. 실행 환경 — <환경 명시>
 
 (예: Docker 단일 환경, WSL Ubuntu, venv 등 본인 프로젝트에 맞게)
 
@@ -113,16 +129,17 @@
 
 ---
 
-## 9. 참조 문서
+## 10. 참조 문서
 
 - [`PROJECT_DIRECTIVE.md`](PROJECT_DIRECTIVE.md) — 헌법
 - [`docs/specs/_TEMPLATE.md`](docs/specs/_TEMPLATE.md) — SPEC 템플릿
 - [`docs/devlog/_TEMPLATE.md`](docs/devlog/_TEMPLATE.md) — devlog 템플릿
+- [`docs/conventions/architecture-preservation.md`](docs/conventions/architecture-preservation.md) — 대전제 보호 컨벤션
 - (Tier 2 이상) `docs/runbook/` — 운영 절차서
 
 ---
 
-## 10. Phase 3+ 에서 부활할 유예 규칙 (현재 미적용)
+## 11. Phase 3+ 에서 부활할 유예 규칙 (현재 미적용)
 
 - (예: 외부 API 중앙 통제 / Eval 파이프라인 / 동시성 강제 / 분산 트레이싱)
 - 필요해지면 PROJECT_DIRECTIVE 의 해당 섹션 참고해 본 문서로 승격.
